@@ -51,6 +51,7 @@ public void OnPluginStart()
 public Action Command_WeaponsMenu(int client, int args)
 {
 	MenuPrimaryWeapon().Display(client, MENU_TIME_FOREVER);
+	
 	return Plugin_Handled;
 }
 
@@ -70,49 +71,43 @@ public Menu MenuPrimaryWeapon()
 	return menu;
 }
 	
-public int MenuPrimaryWeaponHandler(Menu menu, MenuAction action, int client, int item)
+public int MenuPrimaryWeaponHandler(Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
 		case MenuAction_Select:
 		{
 			char choice[32];
-			menu.GetItem(item, choice, sizeof(choice));
+			menu.GetItem(param2, choice, sizeof(choice));
 			if(StrEqual(choice, "1"))
 			{
-				GiveWeapon(client, Slot_Primary, "weapon_ak47");
-				delete menu;
-				MenuSecondaryWeapon().Display(client, MENU_TIME_FOREVER);
+				GiveWeapon(param1, Slot_Primary, "weapon_ak47");
+				MenuSecondaryWeapon().Display(param1, MENU_TIME_FOREVER);
 			}
 			else if(StrEqual(choice, "2"))
 			{
-				GiveWeapon(client, Slot_Primary, "weapon_m4a1");
-				delete menu;
-				MenuSecondaryWeapon().Display(client, MENU_TIME_FOREVER);
+				GiveWeapon(param1, Slot_Primary, "weapon_m4a1");
+				MenuSecondaryWeapon().Display(param1, MENU_TIME_FOREVER);
 			}
 			else if(StrEqual(choice, "3"))
 			{
-				GiveWeapon(client, Slot_Primary, "weapon_m4a1_silencer");
-				delete menu;
-				MenuSecondaryWeapon().Display(client, MENU_TIME_FOREVER);
+				GiveWeapon(param1, Slot_Primary, "weapon_m4a1_silencer");
+				MenuSecondaryWeapon().Display(param1, MENU_TIME_FOREVER);
 			}
 			else if(StrEqual(choice, "4"))
 			{
-				GiveWeapon(client, Slot_Primary, "weapon_sg556");
-				delete menu;
-				MenuSecondaryWeapon().Display(client, MENU_TIME_FOREVER);
+				GiveWeapon(param1, Slot_Primary, "weapon_sg556");
+				MenuSecondaryWeapon().Display(param1, MENU_TIME_FOREVER);
 			}
 			else if(StrEqual(choice, "5"))
 			{
-				GiveWeapon(client, Slot_Primary, "weapon_aug");
-				delete menu;
-				MenuSecondaryWeapon().Display(client, MENU_TIME_FOREVER);
+				GiveWeapon(param1, Slot_Primary, "weapon_aug");
+				MenuSecondaryWeapon().Display(param1, MENU_TIME_FOREVER);
 			}
 			else if(StrEqual(choice, "6"))
 			{
-				GiveWeapon(client, Slot_Primary, "weapon_awp");
-				delete menu;
-				MenuSecondaryWeapon().Display(client, MENU_TIME_FOREVER);
+				GiveWeapon(param1, Slot_Primary, "weapon_awp");
+				MenuSecondaryWeapon().Display(param1, MENU_TIME_FOREVER);
 			}
 		}
 		case MenuAction_End:
@@ -139,43 +134,44 @@ public Menu MenuSecondaryWeapon()
 	return menu;
 }
 
-public int MenuSecondaryWeaponHandler (Menu menu, MenuAction action, int client, int item)
+public int MenuSecondaryWeaponHandler (Menu menu, MenuAction action, int param1, int param2)
 {
 	switch(action)
 	{
 		case MenuAction_Select:
 		{
 			char choice[32];
-			menu.GetItem(item, choice, sizeof(choice));
+			menu.GetItem(param2, choice, sizeof(choice));
 			if(StrEqual(choice, "1"))
 			{
-				GiveWeapon(client, Slot_Secondary, "weapon_usp_silencer");
+				GiveWeapon(param1, Slot_Secondary, "weapon_usp_silencer");
 			}
 			else if(StrEqual(choice, "2"))
 			{
-				GiveWeapon(client, Slot_Secondary, "weapon_deagle");
+				GiveWeapon(param1, Slot_Secondary, "weapon_deagle");
 			}
 			else if(StrEqual(choice, "3"))
 			{
-				GiveWeapon(client, Slot_Secondary, "weapon_glock");
+				GiveWeapon(param1, Slot_Secondary, "weapon_glock");
 			}
 			else if(StrEqual(choice, "4"))
 			{
-				GiveWeapon(client, Slot_Secondary, "weapon_p250");
+				GiveWeapon(param1, Slot_Secondary, "weapon_p250");
 			}
 			else if(StrEqual(choice, "5"))
 			{
-				GiveWeapon(client, Slot_Secondary, "weapon_tec9");
+				GiveWeapon(param1, Slot_Secondary, "weapon_tec9");
 			}
 			else if(StrEqual(choice, "6"))
 			{
-				GiveWeapon(client, Slot_Secondary, "weapon_cz75a");
+				GiveWeapon(param1, Slot_Secondary, "weapon_cz75a");
 			}
 			
 		}
 		case MenuAction_Cancel:
 		{
-			MenuPrimaryWeapon().Display(client, MENU_TIME_FOREVER);
+			if(param2 == MenuCancel_ExitBack)
+				MenuPrimaryWeapon().Display(param1, MENU_TIME_FOREVER);
 			
 		}
 		case MenuAction_End:
