@@ -159,38 +159,6 @@ public int MenuSecondaryWeaponHandler (Menu menu, MenuAction action, int param1,
 	}
 }
 
-/*public void PlayerDeath_Callback(Event e, const char[] name, bool dontBroadcast)
-{
-	// Getting values from event
-	int client = GetClientOfUserId(GetEventInt(e, "userid"));
-
-	
-	if(!IsFakeClient(client))
-	{
-		// Getting entity index for the weapons
-		int EntityIndexPrimary = GetPlayerWeaponSlot(client, Slot_Primary);
-		int EntityIndexSecondary = GetPlayerWeaponSlot(client, Slot_Secondary);
-		
-		// If both the slots are empty or are standard weapons
-		if (EntityIndexPrimary != -1 && (StrEqual("weapon_hkp2000",g_sSecondaryWeapon[client])) || 
-										(StrEqual("weapon_glock", g_sSecondaryWeapon[client])) ||
-										(StrEqual("weapon_usp_silencer", g_sSecondaryWeapon[client]))
-																							)	
-		{	
-			
-			// Getting class names for the weapons equipped before dying
-			GetEdictClassname(EntityIndexPrimary, g_sPrimaryWeapon[client], MAX_WEAPON_NAME_LENGTH);
-			GetEdictClassname(EntityIndexSecondary, g_sSecondaryWeapon[client], MAX_WEAPON_NAME_LENGTH);
-			g_bOpenMenuOnSpawn[client] = false;
-		}
-		else
-		{
-			PrintToServer("PlayerDeath else");
-			g_bOpenMenuOnSpawn[client] = true;
-		}
-	}
-}*/
-
 public void PlayerSpawn_Callback(Event e, const char[] name, bool dontBroadcast)
 {
 	
