@@ -31,9 +31,13 @@ EngineVersion g_Game;
 char g_sPrimaryWeapon[MAXPLAYERS + 1][MAX_WEAPON_NAME_LENGTH];
 char g_sSecondaryWeapon[MAXPLAYERS + 1][MAX_WEAPON_NAME_LENGTH];
 
-// Menu
+// Menu //
 
 bool g_bOpenMenuOnSpawn[MAXPLAYERS + 1] = {true,...};
+
+// ConVars //
+
+ConVar g_cvPluginEnabled;
 
 
 public Plugin myinfo = 
@@ -54,17 +58,31 @@ public void OnPluginStart()
 		SetFailState("This plugin is for CSGO/CSS only.");	
 	}
 	
+	// ConVars //
+	
+	CreateConVar("csgo_statsrec_version", PLUGIN_VERSION, "[CS:GO] StatsRec");
+	g_cvPluginEnabled = CreateConVar("csgo_weaponsmenu_enabled", "1", "Controls if plugin is enabled");
+	
+	
+	
+	// Console Commands // 
+	
 	RegConsoleCmd("sm_weapons", Command_WeaponsMenu, "Displays a menu to choose weapons");
 	
 	// Event Hooks //
 	
-	// HookEvent("player_death", PlayerDeath_Callback, EventHookMode_Post);
 	HookEvent("player_spawn", PlayerSpawn_Callback, EventHookMode_Post);
 	
+	AutoExecConfig(true, "csgo_weaponsmenu");
 }
 
 public Action Command_WeaponsMenu(int client, int args)
 {
+	if(!g_cvPluginEnabled.BoolValue)
+	{
+		return Plugin_Stop;
+	}
+	
 	MenuPrimaryWeapon().Display(client, MENU_TIME_FOREVER);
 	return Plugin_Handled;
 }
@@ -94,10 +112,13 @@ public int MenuPrimaryWeaponHandler(Menu menu, MenuAction action, int param1, in
 			int client = param1;
 			int item = param2;
 			char weaponChoice[MAX_WEAPON_NAME_LENGTH];
+			
 			// Storing chosen weapon in weaponChoice string
 			menu.GetItem(item, weaponChoice, sizeof(weaponChoice));
+			
 			// Giving weapon to player
 			GiveWeapon(client, Slot_Primary, weaponChoice);
+			
 			// Copying the chosen weapon into the global variable
 			g_sPrimaryWeapon[client] = weaponChoice;
 			MenuSecondaryWeapon().Display(client, MENU_TIME_FOREVER);
@@ -137,10 +158,13 @@ public int MenuSecondaryWeaponHandler (Menu menu, MenuAction action, int param1,
 			int client = param1;
 			int item = param2;
 			char weaponChoice[MAX_WEAPON_NAME_LENGTH];
+			
 			// Storing chosen weapon in weaponChoice string
 			menu.GetItem(item, weaponChoice, sizeof(weaponChoice));
+			
 			// Giving weapon to player
 			GiveWeapon(client, Slot_Secondary, weaponChoice);
+			
 			// Copying the chosen weapon into the global variable
 			g_sSecondaryWeapon[client] = weaponChoice;
 			g_bOpenMenuOnSpawn[client] = false;
@@ -161,6 +185,10 @@ public int MenuSecondaryWeaponHandler (Menu menu, MenuAction action, int param1,
 
 public void PlayerSpawn_Callback(Event e, const char[] name, bool dontBroadcast)
 {
+	if(!g_cvPluginEnabled.BoolValue)
+	{
+		return;
+	}
 	
 	// Getting values from event
 	int client = GetClientOfUserId(GetEventInt(e, "userid"));
@@ -172,16 +200,24 @@ public void PlayerSpawn_Callback(Event e, const char[] name, bool dontBroadcast)
 	
 	if(g_bOpenMenuOnSpawn[client])
 	{
-		PrintToServer("PlayerSpawned Open menu");
 		MenuPrimaryWeapon().Display(client, MENU_TIME_FOREVER);
 	}
 	else
 	{
-		PrintToServer("PlayerSpawned EquipPlayerWeapon");
 		GiveWeapon(client, Slot_Primary, g_sPrimaryWeapon[client]);
 		GiveWeapon(client, Slot_Secondary, g_sSecondaryWeapon[client]);
 	}
 	
+}
+
+public void OnClientDisconnect(int client)
+{
+	if (IsFakeClient(client))
+	{
+		return;
+	}
+	
+	g_bOpenMenuOnSpawn[client] = true;
 }
 
 
