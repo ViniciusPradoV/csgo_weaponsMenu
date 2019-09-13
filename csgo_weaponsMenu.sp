@@ -90,7 +90,7 @@ public Action Command_WeaponsMenu(int client, int args)
 
 public Menu MenuPrimaryWeapon()
 {
-	Menu menu = new Menu(MenuPrimaryWeaponHandler, MENU_ACTIONS_ALL);
+	Menu menu = new Menu(MenuPrimaryWeaponHandler, MENU_ACTIONS_DEFAULT);
 	menu.SetTitle("Choose a primary weapon");
 	menu.AddItem("weapon_ak47", "AK-47");
 	menu.AddItem("weapon_m4a1", "M4A4");
@@ -134,7 +134,7 @@ public int MenuPrimaryWeaponHandler(Menu menu, MenuAction action, int param1, in
 
 public Menu MenuSecondaryWeapon()
 {
-	Menu menu = new Menu(MenuSecondaryWeaponHandler, MENU_ACTIONS_ALL);
+	Menu menu = new Menu(MenuSecondaryWeaponHandler, MENU_ACTIONS_DEFAULT);
 	menu.SetTitle("Choose your secondary weapon");
 	menu.AddItem("weapon_usp_silencer", "USP-S");
 	menu.AddItem("weapon_deagle", "Desert Eagle");
