@@ -15,6 +15,9 @@ This plugin lets you choose a primary and secondary weapon and make them persist
 
  Controls if plugin is enabled - Set "1" to enable and "0" to disable
  
+### csgo_weaponsmenu_roundstomenu
+
+Controls number of rounds to re-open the menu automatically, set "0" to disable this function
  
 # Console Commands
 
