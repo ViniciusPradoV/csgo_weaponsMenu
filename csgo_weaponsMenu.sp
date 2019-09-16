@@ -210,7 +210,7 @@ public void PlayerSpawn_Callback(Event e, const char[] name, bool dontBroadcast)
 		return;
 	}
 	
-	if(g_cvRoundsToOpenMenu.IntValue == 0)
+	if(g_iRoundsToOpenMenu == 0 && g_cvRoundsToOpenMenu.IntValue != 0)
 	{
 		g_bOpenMenuOnSpawn[client] = true;
 	}
