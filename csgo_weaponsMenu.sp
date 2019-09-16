@@ -67,13 +67,16 @@ public void OnPluginStart()
 	
 	CreateConVar("csgo_weaponsmenu_version", PLUGIN_VERSION, "[CS:GO] Weapons Menu");
 	g_cvPluginEnabled = CreateConVar("csgo_weaponsmenu_enabled", "1", "Controls if plugin is enabled");
-	g_cvRoundsToOpenMenu = CreateConVar("csgo_weaponsmenu_roundstomenu", "1", "Set a number of rounds to re-open the menu");
+	g_cvRoundsToOpenMenu = CreateConVar("csgo_weaponsmenu_roundstomenu", "0", "Set a number of rounds to re-open the menu");
 	
 	
 	
 	// Console Commands // 
 	
 	RegConsoleCmd("sm_weapons", Command_WeaponsMenu, "Displays a menu to choose weapons");
+	
+	// Command listener //
+	AddCommandListener(OnSayWeapons, "!weapons");
 	
 	// Event Hooks //
 
