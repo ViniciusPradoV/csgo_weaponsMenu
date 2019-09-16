@@ -37,7 +37,7 @@ bool g_bOpenMenuOnSpawn[MAXPLAYERS + 1] = {true,...};
 
 // Rounds to open menu control variable //
 
-int g_iRoundsToOpenMenu;
+int g_iRoundsToOpenMenu[MAXPLAYERS +1];
 
 // ConVars //
 
@@ -76,14 +76,8 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_weapons", Command_WeaponsMenu, "Displays a menu to choose weapons");
 	
 	// Event Hooks //
-
 	HookEvent("round_end", RoundEnd_Callback, EventHookMode_Post);
 	HookEvent("player_spawn", PlayerSpawn_Callback, EventHookMode_Post);
-	
-	// Setting open menu control variable //
-	
- 	g_iRoundsToOpenMenu = g_cvRoundsToOpenMenu.IntValue;
-	
 	
 	AutoExecConfig(true, "csgo_weaponsmenu");
 }
@@ -210,7 +204,7 @@ public void PlayerSpawn_Callback(Event e, const char[] name, bool dontBroadcast)
 		return;
 	}
 	
-	if(g_iRoundsToOpenMenu == 0 && g_cvRoundsToOpenMenu.IntValue != 0)
+	if(g_iRoundsToOpenMenu[client] == 0 && g_cvRoundsToOpenMenu.IntValue != 0)
 	{
 		g_bOpenMenuOnSpawn[client] = true;
 	}
@@ -218,34 +212,32 @@ public void PlayerSpawn_Callback(Event e, const char[] name, bool dontBroadcast)
 	if(g_bOpenMenuOnSpawn[client])
 	{
 		MenuPrimaryWeapon().Display(client, MENU_TIME_FOREVER);
+		g_iRoundsToOpenMenu[client] = g_cvRoundsToOpenMenu.IntValue;
 	}
 	else
 	{
 		GiveWeapon(client, Slot_Primary, g_sPrimaryWeapon[client]);
 		GiveWeapon(client, Slot_Secondary, g_sSecondaryWeapon[client]);
-		
 	}
 	
 }
 
 public void RoundEnd_Callback(Event e, const char[] name, bool dontBroadcast)
 {
+	// Checking for Enabled CVar, if false does not execute this function
 	if(!g_cvPluginEnabled.BoolValue)
 	{
 		return;
 	}
 	
-	if(g_cvRoundsToOpenMenu.IntValue == 0)
+	for (int i = 1; i <= MaxClients; i++)
 	{
-		return;
+		if(IsClientConnected(i))
+		{
+			if(!IsFakeClient(i))
+				g_iRoundsToOpenMenu[i]--;
+		}
 	}
-	
-	// If menu opened in the last iteration, reset the control variable
-	if(g_iRoundsToOpenMenu == 0)
-		g_iRoundsToOpenMenu = g_cvRoundsToOpenMenu.IntValue;
-	
-	g_iRoundsToOpenMenu--;
-	
 }
 
 public void OnClientDisconnect(int client)
