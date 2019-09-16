@@ -23,4 +23,4 @@ Controls number of rounds to re-open the menu automatically, set "0" to disable 
 
 ### sm_weapons
 
-Displays a menu to choose weapons. This menu also opens automatically in the first round.
+Displays a menu to choose weapons. This menu also opens automatically in the first round. You can also trigger the menu by typing !weapons in the general chat
