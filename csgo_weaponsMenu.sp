@@ -75,9 +75,6 @@ public void OnPluginStart()
 	
 	RegConsoleCmd("sm_weapons", Command_WeaponsMenu, "Displays a menu to choose weapons");
 	
-	// Command listener //
-	AddCommandListener(OnSayWeapons, "!weapons");
-	
 	// Event Hooks //
 
 	HookEvent("round_end", RoundEnd_Callback, EventHookMode_Post);
