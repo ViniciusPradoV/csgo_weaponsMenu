@@ -3,7 +3,7 @@
 #define DEBUG
 
 #define PLUGIN_AUTHOR "Vinicius do Prado Vieira"
-#define PLUGIN_VERSION "0.01"
+#define PLUGIN_VERSION "0.02"
 
 // Slots
 
@@ -35,9 +35,14 @@ char g_sSecondaryWeapon[MAXPLAYERS + 1][MAX_WEAPON_NAME_LENGTH];
 
 bool g_bOpenMenuOnSpawn[MAXPLAYERS + 1] = {true,...};
 
+// Rounds to open menu control variable //
+
+int g_iRoundsToOpenMenu;
+
 // ConVars //
 
 ConVar g_cvPluginEnabled;
+ConVar g_cvRoundsToOpenMenu;
 
 
 public Plugin myinfo = 
@@ -60,8 +65,9 @@ public void OnPluginStart()
 	
 	// ConVars //
 	
-	CreateConVar("csgo_statsrec_version", PLUGIN_VERSION, "[CS:GO] StatsRec");
+	CreateConVar("csgo_weaponsmenu_version", PLUGIN_VERSION, "[CS:GO] Weapons Menu");
 	g_cvPluginEnabled = CreateConVar("csgo_weaponsmenu_enabled", "1", "Controls if plugin is enabled");
+	g_cvRoundsToOpenMenu = CreateConVar("csgo_weaponsmenu_roundstomenu", "1", "Set a number of rounds to re-open the menu");
 	
 	
 	
@@ -70,8 +76,14 @@ public void OnPluginStart()
 	RegConsoleCmd("sm_weapons", Command_WeaponsMenu, "Displays a menu to choose weapons");
 	
 	// Event Hooks //
-	
+
+	HookEvent("round_end", RoundEnd_Callback, EventHookMode_Post);
 	HookEvent("player_spawn", PlayerSpawn_Callback, EventHookMode_Post);
+	
+	// Setting open menu control variable //
+	
+ 	g_iRoundsToOpenMenu = g_cvRoundsToOpenMenu.IntValue;
+	
 	
 	AutoExecConfig(true, "csgo_weaponsmenu");
 }
@@ -198,6 +210,11 @@ public void PlayerSpawn_Callback(Event e, const char[] name, bool dontBroadcast)
 		return;
 	}
 	
+	if(g_cvRoundsToOpenMenu.IntValue == 0)
+	{
+		g_bOpenMenuOnSpawn[client] = true;
+	}
+	
 	if(g_bOpenMenuOnSpawn[client])
 	{
 		MenuPrimaryWeapon().Display(client, MENU_TIME_FOREVER);
@@ -206,7 +223,28 @@ public void PlayerSpawn_Callback(Event e, const char[] name, bool dontBroadcast)
 	{
 		GiveWeapon(client, Slot_Primary, g_sPrimaryWeapon[client]);
 		GiveWeapon(client, Slot_Secondary, g_sSecondaryWeapon[client]);
+		
 	}
+	
+}
+
+public void RoundEnd_Callback(Event e, const char[] name, bool dontBroadcast)
+{
+	if(!g_cvPluginEnabled.BoolValue)
+	{
+		return;
+	}
+	
+	if(g_cvRoundsToOpenMenu.IntValue == 0)
+	{
+		return;
+	}
+	
+	// If menu opened in the last iteration, reset the control variable
+	if(g_iRoundsToOpenMenu == 0)
+		g_iRoundsToOpenMenu = g_cvRoundsToOpenMenu.IntValue;
+	
+	g_iRoundsToOpenMenu--;
 	
 }
 
